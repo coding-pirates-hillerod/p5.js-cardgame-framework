@@ -1,36 +1,44 @@
 const playerCount = 2;
 
+// API
+
+// Spillerens kort
+// player.cards[0|1|..]
+
+// Spillerens trukne kort
+// player.drawnCards[0|1|...]
+
+// Tilføj en liste af kort til spilleren
+// player.addCards(cards)
+
+// Vend øverste kort - true: hvis kortet skal have forsiden op / false: hvis kortet skal have bagsiden op
+// player.drawTopCard(true|false)
+
+// Få fat i spillerens øverste kort
+// let card = player.cards[0];
+
+// kortets kulør (hearts / diamonds / clubs / spades)
+// card.suit
+
+// kortets værdi ( 2 - 14 )
+// card.value
+
+// true: hvis kortet vender værdisiden op / false: hvis kortets bagside vender op
+// card.flipped
 
 // |||| Spilleregler ||||
 // vvvv              vvvv
 
+// Funktion der kaldes når spilleres skal trække et kort
 function drawCardFunction(player) {
-  // hvad skal der skal når der skal vendes et kort?
-  
   player.drawTopCard(true);
-  
 }
 
+// Funktion der kaldes LIGE EFTER spilleren har trukket et kort
 function cardDrawnFunction(drawingPlayer, listOfPlayers) {
   // hvad skal der ske når kortet ER vendt
-  let allPlayersDrawn = true;
-  listOfPlayers.forEach(player => {
-    if ( player.getDrawnCardCount() < 1 ) {
-      allPlayersDrawn = false;
-    }
-  });
+  andTheWinnerIs(drawingPlayer);
   
-  if ( allPlayersDrawn ) {
-    // find vinderen
-    let playerListCopy = [...listOfPlayers];
-    playerListCopy.sort((p1, p2) => {
-      return p2.drawnCards[0].value - p1.drawnCards[0].value;
-    });
-    let winner = playerListCopy[0];
-    nextRound(winner);
-  }
-  // API til at give vinderen stik og klargøre bordet til næste runde
-  // nextRound(winnerPlayer);
 }
 
 // ^^^^              ^^^^
