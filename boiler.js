@@ -43,8 +43,7 @@ function startGame() {
   logText("Runde: "+roundCounter);
 }
 
-function nextRound(winnerPlayer) {
-  // TODO reset table
+function andTheWinnerIs(winnerPlayer) {
   global_playerDecks.forEach(player => {
     winnerPlayer.addCards(
       player.getAndResetDrawnCards()
