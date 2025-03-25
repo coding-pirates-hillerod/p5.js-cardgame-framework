@@ -9,6 +9,7 @@ let global_cardWidth = 70;
 let global_cardHeight = 100;
 let global_backBack;
 let global_mainDeck;
+let global_nextRoundButton;
 
 // colors
 let global_tableColor = '#0B6623'; // green
@@ -20,7 +21,7 @@ let global_playerDecks = [];
 
 let global_dealCardFunction;
 let global_drawCardFunction;
-let global_cardDrawnFunction;
+let global_findWinnerFunction;
 
 let roundCounter = 0;
 
@@ -39,8 +40,10 @@ function preload() {
 }
 
 function startGame() {
-  roundCounter++;
-  logText("Runde: "+roundCounter);
+  if ( roundCounter == 0 ) {
+    roundCounter++;
+    logText("Runde: "+roundCounter)
+  }
 }
 
 function andTheWinnerIs(winnerPlayer) {
@@ -48,7 +51,6 @@ function andTheWinnerIs(winnerPlayer) {
     winnerPlayer.addCards(
       player.getAndResetDrawnCards()
     );
-    player.drawBorder();
   });
   
   repaintTable();
@@ -85,19 +87,20 @@ function initPlayers(playerCount) {
       global_drawCardFunction(playerDeck);
       repaintTable();
     });
-    playerDeck.addCardDrawnAction(() => {
-      global_cardDrawnFunction(playerDeck, global_playerDecks);
-    });
     playerDeck.drawBorder();
     
     global_playerDecks.push(playerDeck);
   }
 }
 
-function initGame(dealCardFunction, drawCardFunction, cardDrawnFunction) {
+function initGame(dealCardFunction, drawCardFunction, findWinnerFunction) {
   global_dealCardFunction = dealCardFunction;
   global_drawCardFunction = drawCardFunction;
-  global_cardDrawnFunction = cardDrawnFunction;
+  global_findWinnerFunction = findWinnerFunction;
+}
+
+function _findWinner() {
+  global_findWinnerFunction(global_playerDecks);
 }
 
 function _dealCards() {
@@ -120,6 +123,10 @@ function drawMainDeck() {
   }
   
   shuffleDeck(global_mainDeck.cards);  
+  global_nextRoundButton = createButton('Næste runde');
+  global_nextRoundButton.position(global_mainDeck.x+global_cardWidth/2-global_nextRoundButton.size().width/2, global_mainDeck.y+global_cardHeight+15);
+  
+  global_nextRoundButton.mousePressed(_findWinner);
 }
 
 function repaintTable() {
@@ -154,7 +161,15 @@ class DeckPlacement {
   }
   
   drawBorder() {
-   
+    
+    // add player name
+    stroke(0)
+    strokeWeight(1)
+    fill(255);
+    textSize(16);
+    text(this.name, this.x, this.y-10);
+    
+    // add empty deck ( border )
     stroke(global_cardBorderColor);     
     strokeWeight(2);       
     fill(global_tableColor);   
@@ -164,9 +179,9 @@ class DeckPlacement {
       image(global_cardBack, this.x, this.y, global_cardWidth, global_cardHeight);
       
       // add card count
-      fill(255); // tekstfarve (sort)
-      textSize(16); // tekststørrelse
-      text(this.cards.length, this.x, this.y+global_cardHeight); // (tekst, x, y)
+      fill(255);
+      textSize(16);
+      text(this.cards.length, this.x, this.y+global_cardHeight);
     }
     
     // draw drawn cards above the deck
@@ -205,7 +220,9 @@ class DeckPlacement {
       this.drawnCards.push(...drawnCards);
     }
     this.drawBorder();
-    this.cardDrawnActionFunction();
+    if ( this.cardDrawnActionFunction ) {
+      this.cardDrawnActionFunction();
+    }
   }
   
   getDrawnCardCount() {
