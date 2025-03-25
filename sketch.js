@@ -30,14 +30,14 @@ const playerCount = 2;
 // vvvv              vvvv
 
 // Funktion der kaldes når spilleres skal trække et kort
-function drawCardFunction(player) {
+function traekEtKort(player) {
   player.drawTopCard(true);
 }
 
-// Funktion der kaldes LIGE EFTER spilleren har trukket et kort
-function cardDrawnFunction(drawingPlayer, listOfPlayers) {
-  // hvad skal der ske når kortet ER vendt
-  andTheWinnerIs(drawingPlayer);
+// Funktion der kaldes når 'Næste runde' knappen er trykkes
+function findVinderen(listOfPlayers) {
+  // angiv rundens vinder - vinderen får alle trukne kort og bordet klargøres til næste runde
+  andTheWinnerIs(listOfPlayers[0]);
   
 }
 
@@ -49,7 +49,7 @@ function cardDrawnFunction(drawingPlayer, listOfPlayers) {
 function setup() {
   initTable();
   initPlayers(playerCount);
-  initGame(dealCardsFunction, drawCardFunction, cardDrawnFunction);
+  initGame(dealCardsFunction, traekEtKort, findVinderen);
 }
 
 function dealCardsFunction(listOfCards, listOfPlayers) {
