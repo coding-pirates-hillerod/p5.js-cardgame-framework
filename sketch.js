@@ -31,7 +31,9 @@ const playerCount = 2;
 
 // Funktion der kaldes når spilleres skal trække et kort
 function traekEtKort(player) {
-  player.drawTopCard(true);
+  if ( player.getDrawnCardCount() < 1 ) {
+    player.drawTopCard(true);
+  }
 }
 
 // Funktion der kaldes når 'Næste runde' knappen er trykkes
